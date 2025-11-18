@@ -1,69 +1,68 @@
 # skillshift-api
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Projeto backend do SkillShift.AI desenvolvido com Quarkus (Java 21) e JDBC puro.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## Execucao em modo desenvolvimento
 
-## Running the application in dev mode
+Rode o modo dev (com live coding) com:
 
-You can run your application in dev mode that enables live coding using:
-
-```shell script
+```shell
 ./mvnw quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+A Dev UI fica disponivel apenas neste modo: <http://localhost:8080/q/dev/>.
 
-## Packaging and running the application
+## Empacotamento e execucao
 
-The application can be packaged using:
+Gere o pacote padrao:
 
-```shell script
+```shell
 ./mvnw package
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+O arquivo `quarkus-run.jar` aparece em `target/quarkus-app/` e deve ser executado via `java -jar target/quarkus-app/quarkus-run.jar`. As dependencias ficam em `target/quarkus-app/lib/`.
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+Para gerar um uber-jar:
 
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
+```shell
 ./mvnw package -Dquarkus.package.jar.type=uber-jar
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+Depois execute com `java -jar target/*-runner.jar`.
 
-## Creating a native executable
+## Binario nativo
 
-You can create a native executable using:
+Crie um executavel nativo com:
 
-```shell script
+```shell
 ./mvnw package -Dnative
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+Sem GraalVM instalada, use o build em container:
 
-```shell script
+```shell
 ./mvnw package -Dnative -Dquarkus.native.container-build=true
 ```
 
-You can then execute your native executable with: `./target/skillshift-api-1.0.0-SNAPSHOT-runner`
+O binario final ficara em `target/skillshift-api-1.0.0-SNAPSHOT-runner`.
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+## Referencias uteis
 
-## Related Guides
+- Hibernate Validator: <https://quarkus.io/guides/validation>
+- SmallRye OpenAPI (Swagger UI): <https://quarkus.io/guides/openapi-swaggerui>
+- REST Jackson: <https://quarkus.io/guides/rest#json-serialisation>
+- JDBC Oracle: <https://quarkus.io/guides/datasource>
 
-- Hibernate Validator ([guide](https://quarkus.io/guides/validation)): Validate object properties (field, getter) and method parameters for your beans (REST, CDI, Jakarta Persistence)
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes with Swagger UI
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- JDBC Driver - Oracle ([guide](https://quarkus.io/guides/datasource)): Connect to the Oracle database via JDBC
+## Scripts SQL do banco
 
-## Provided Code
+Os scripts oficiais para criar e popular o schema Oracle ficam em `src/db/ddl/`:
 
-### REST
+- `drop_tables.sql`: remove todas as tabelas na ordem correta.
+- `create_tables.sql`: recria as tabelas (com identities, constraints e checks).
+- `carga_dados.sql`: insere a massa de teste padrão do SkillShift.AI.
 
-Easily start your REST Web Services
+Execute-os nessa sequência antes de subir a API para garantir alinhamento entre o banco e as validações impostas no código.
 
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+## Recursos REST de exemplo
+
+O projeto gerado contem um recurso REST inicial para servir de demonstracao. Mais detalhes: <https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources>
