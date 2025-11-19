@@ -118,18 +118,6 @@ VALUES (20, 'Robos de Processo para Backoffice - Google', 'Operacoes Administrat
 INSERT INTO t_skillshift_curso (id_curso, nome, categoria, duracao_horas, plataforma, nivel, ativo)
 VALUES (21, 'Visao Computacional para Qualidade - Google', 'Controle de Qualidade', 54, 'Google Academy', 'AVANCADO', 'S');
 
--- Aliases para facilitar o pareamento com a IA
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (1, 17, 'Atendimento IA Google');
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (2, 22, 'Atendimento IA IBM');
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (3, 27, 'Automacao Industrial Microsoft');
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (4, 32, 'Logistica Preditiva Amazon');
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (5, 37, 'RPA Backoffice Siemens');
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (6, 42, 'Visao Computacional Siemens');
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (7, 47, 'Atendimento IA Accenture');
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (8, 52, 'Logistica IA Deloitte');
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (9, 57, 'RPA Operacional PwC');
-INSERT INTO t_skillshift_curso_alias (id_alias, id_curso, termo) VALUES (10, 62, 'Qualidade Visao Computacional EY');
-
 INSERT INTO t_skillshift_curso (id_curso, nome, categoria, duracao_horas, plataforma, nivel, ativo)
 VALUES (22, 'Atendimento Inteligente com IA - IBM', 'Servicos de Atendimento', 44, 'IBM Academy', 'INICIAL', 'S');
 
@@ -590,4 +578,55 @@ VALUES (21, 4, 9, 64.9, 'MANUAL', 'PENDENTE', TO_DATE('2024-02-25','YYYY-MM-DD')
 
 INSERT INTO t_skillshift_recomendacao (id_recomendacao, id_usuario, id_curso, score, fonte, status, data_recomendacao)
 VALUES (22, 12, 2, 85.6, 'IA', 'CONCLUIDA', TO_DATE('2024-03-05','YYYY-MM-DD'));
+
+-- Aliases para facilitar o pareamento com a IA
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'Atendimento IA Google'
+  FROM t_skillshift_curso
+ WHERE nome = 'Atendimento Inteligente com IA - Google' AND ROWNUM = 1;
+
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'Atendimento IA IBM'
+  FROM t_skillshift_curso
+ WHERE nome = 'Atendimento Inteligente com IA - IBM' AND ROWNUM = 1;
+
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'Automacao Industrial Microsoft'
+  FROM t_skillshift_curso
+ WHERE nome = 'Automacao Industrial Avancada - Microsoft' AND ROWNUM = 1;
+
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'Logistica Preditiva Amazon'
+  FROM t_skillshift_curso
+ WHERE nome = 'Analise Preditiva para Logistica - Amazon' AND ROWNUM = 1;
+
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'RPA Backoffice Siemens'
+  FROM t_skillshift_curso
+ WHERE nome = 'Robos de Processo para Backoffice - Siemens' AND ROWNUM = 1;
+
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'Visao Computacional Siemens'
+  FROM t_skillshift_curso
+ WHERE nome = 'Visao Computacional para Qualidade - Siemens' AND ROWNUM = 1;
+
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'Atendimento IA Accenture'
+  FROM t_skillshift_curso
+ WHERE nome = 'Atendimento Inteligente com IA - Accenture' AND ROWNUM = 1;
+
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'Logistica IA Deloitte'
+  FROM t_skillshift_curso
+ WHERE nome = 'Analise Preditiva para Logistica - Deloitte' AND ROWNUM = 1;
+
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'RPA Operacional PwC'
+  FROM t_skillshift_curso
+ WHERE nome = 'Robos de Processo para Backoffice - PwC' AND ROWNUM = 1;
+
+INSERT INTO t_skillshift_curso_alias (id_curso, termo)
+SELECT id_curso, 'Qualidade Visao Computacional EY'
+  FROM t_skillshift_curso
+ WHERE nome = 'Visao Computacional para Qualidade - EY' AND ROWNUM = 1;
 
