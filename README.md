@@ -175,6 +175,88 @@ Recomendacao --> IARetornoCluster
 IAClient --> IARetornoCluster
 ```
 
+## 9. Modelo Entidade-Relacionamento (MER)
+Você pode visualizar o MER diretamente em qualquer visualizador Mermaid (ex.: <https://mermaid.live>). Basta colar o trecho abaixo para gerar a imagem:
+
+```mermaid
+erDiagram
+    T_SKILLSHIFT_USUARIO ||--o{ T_SKILLSHIFT_USUARIO_EMPRESA : possui
+    T_SKILLSHIFT_EMPRESA ||--o{ T_SKILLSHIFT_USUARIO_EMPRESA : contrata
+    T_SKILLSHIFT_USUARIO ||--o{ T_SKILLSHIFT_RECOMENDACAO : recebe
+    T_SKILLSHIFT_CURSO ||--o{ T_SKILLSHIFT_RECOMENDACAO : referenciado
+    T_SKILLSHIFT_CURSO ||--o{ T_SKILLSHIFT_CURSO_ALIAS : possui
+    T_SKILLSHIFT_USUARIO ||--o{ T_SKILLSHIFT_RECOMENDACAO_IA_LOG : gera
+
+    T_SKILLSHIFT_USUARIO {
+        NUMBER id_usuario PK
+        VARCHAR nome
+        VARCHAR email UNIQUE
+        VARCHAR senha_hash
+        NUMBER idade
+        VARCHAR escolaridade
+        VARCHAR area_atual
+        NUMBER nivel_risco
+        VARCHAR tipo_perfil
+        DATE criado_em
+    }
+
+    T_SKILLSHIFT_EMPRESA {
+        NUMBER id_empresa PK
+        VARCHAR nome
+        VARCHAR setor
+        VARCHAR tamanho
+        VARCHAR cnpj UNIQUE
+    }
+
+    T_SKILLSHIFT_USUARIO_EMPRESA {
+        NUMBER id_usuario FK -> T_SKILLSHIFT_USUARIO.id_usuario
+        NUMBER id_empresa FK -> T_SKILLSHIFT_EMPRESA.id_empresa
+        VARCHAR cargo
+        DATE data_inicio
+        PK id_usuario id_empresa
+    }
+
+    T_SKILLSHIFT_CURSO {
+        NUMBER id_curso PK
+        VARCHAR nome
+        VARCHAR categoria
+        NUMBER duracao_horas
+        VARCHAR plataforma
+        VARCHAR nivel
+        CHAR ativo
+    }
+
+    T_SKILLSHIFT_CURSO_ALIAS {
+        NUMBER id_alias PK
+        NUMBER id_curso FK -> T_SKILLSHIFT_CURSO.id_curso
+        VARCHAR termo
+        UNIQUE id_curso termo
+    }
+
+    T_SKILLSHIFT_RECOMENDACAO {
+        NUMBER id_recomendacao PK
+        NUMBER id_usuario FK -> T_SKILLSHIFT_USUARIO.id_usuario
+        NUMBER id_curso FK -> T_SKILLSHIFT_CURSO.id_curso
+        NUMBER score
+        VARCHAR fonte
+        VARCHAR status
+        DATE data_recomendacao
+        NUMBER cluster_id
+        CLOB payload_ia
+    }
+
+    T_SKILLSHIFT_RECOMENDACAO_IA_LOG {
+        NUMBER id_log PK
+        NUMBER id_usuario FK -> T_SKILLSHIFT_USUARIO.id_usuario
+        NUMBER cluster_id
+        CLOB payload_envio
+        CLOB payload_retorno
+        VARCHAR status
+        VARCHAR erro
+        DATE criado_em
+    }
+```
+
 ## 9. Execução e Deploy
 ```bash
 # Dev mode
