@@ -84,3 +84,12 @@ SELECT c.nome AS curso_oficial,
   FROM t_skillshift_curso_alias a
   JOIN t_skillshift_curso c ON c.id_curso = a.id_curso
  ORDER BY c.nome;
+
+-- Consulta 10: Empresas com mais de 2 colaboradores ativos (agrupamento + HAVING).
+SELECT e.nome AS empresa,
+       COUNT(ue.id_usuario) AS total_colaboradores
+  FROM t_skillshift_empresa e
+  JOIN t_skillshift_usuario_empresa ue ON ue.id_empresa = e.id_empresa
+ GROUP BY e.nome
+HAVING COUNT(ue.id_usuario) > 2
+ ORDER BY total_colaboradores DESC;
