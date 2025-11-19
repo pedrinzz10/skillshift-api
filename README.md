@@ -178,6 +178,8 @@ IAClient --> IARetornoCluster
 ## 9. Modelo Entidade-Relacionamento (MER)
 Você pode visualizar o MER diretamente em qualquer visualizador Mermaid (ex.: <https://mermaid.live>). Basta colar o trecho abaixo para gerar a imagem:
 
+![MER SkillShift.AI](docs/img/mer-skillshift.png)
+
 ```mermaid
 erDiagram
     T_SKILLSHIFT_USUARIO ||--o{ T_SKILLSHIFT_USUARIO_EMPRESA : possui
@@ -190,7 +192,7 @@ erDiagram
     T_SKILLSHIFT_USUARIO {
         NUMBER id_usuario PK
         VARCHAR nome
-        VARCHAR email UNIQUE
+        VARCHAR email
         VARCHAR senha_hash
         NUMBER idade
         VARCHAR escolaridade
@@ -205,15 +207,14 @@ erDiagram
         VARCHAR nome
         VARCHAR setor
         VARCHAR tamanho
-        VARCHAR cnpj UNIQUE
+        VARCHAR cnpj
     }
 
     T_SKILLSHIFT_USUARIO_EMPRESA {
-        NUMBER id_usuario FK -> T_SKILLSHIFT_USUARIO.id_usuario
-        NUMBER id_empresa FK -> T_SKILLSHIFT_EMPRESA.id_empresa
+        NUMBER id_usuario PK
+        NUMBER id_empresa PK
         VARCHAR cargo
         DATE data_inicio
-        PK id_usuario id_empresa
     }
 
     T_SKILLSHIFT_CURSO {
@@ -228,15 +229,14 @@ erDiagram
 
     T_SKILLSHIFT_CURSO_ALIAS {
         NUMBER id_alias PK
-        NUMBER id_curso FK -> T_SKILLSHIFT_CURSO.id_curso
+        NUMBER id_curso
         VARCHAR termo
-        UNIQUE id_curso termo
     }
 
     T_SKILLSHIFT_RECOMENDACAO {
         NUMBER id_recomendacao PK
-        NUMBER id_usuario FK -> T_SKILLSHIFT_USUARIO.id_usuario
-        NUMBER id_curso FK -> T_SKILLSHIFT_CURSO.id_curso
+        NUMBER id_usuario
+        NUMBER id_curso
         NUMBER score
         VARCHAR fonte
         VARCHAR status
@@ -247,7 +247,7 @@ erDiagram
 
     T_SKILLSHIFT_RECOMENDACAO_IA_LOG {
         NUMBER id_log PK
-        NUMBER id_usuario FK -> T_SKILLSHIFT_USUARIO.id_usuario
+        NUMBER id_usuario
         NUMBER cluster_id
         CLOB payload_envio
         CLOB payload_retorno
@@ -290,3 +290,9 @@ Estruturas complementares:
 - `t_skillshift_recomendacao_ia_log`: log de payloads e status do serviço IA.
 
 > Execute `drop_tables.sql` → `create_tables.sql` → `carga_dados.sql` antes de subir a API para garantir aderência entre banco e código.
+
+## 11. Pendências / Próximos passos
+- Inserir os **prints do protótipo** (fornecidos pelo front-end) na seção de documentação e exportar o PDF final.
+- Gravar e publicar os **vídeos**: pitch e demonstração (máx. 10 min) com o deploy em execução.
+- Garantir a **integração com o front-end** (consumindo todos os endpoints já expostos) e registrar o fluxo end-to-end no vídeo de demonstração.
+- Após reunir os itens acima, gerar o pacote de entrega (ZIP + PDF + links do deploy e dos vídeos).
