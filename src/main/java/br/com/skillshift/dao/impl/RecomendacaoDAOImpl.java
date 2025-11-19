@@ -19,7 +19,7 @@ import br.com.skillshift.model.Recomendacao;
 @ApplicationScoped
 public class RecomendacaoDAOImpl implements RecomendacaoDAO {
 
-    private static final String BASE_SELECT = "SELECT id_recomendacao, id_usuario, id_curso, score, fonte, status, data_recomendacao, cluster, payload_ia FROM t_skillshift_recomendacao";
+    private static final String BASE_SELECT = "SELECT id_recomendacao, id_usuario, id_curso, score, fonte, status, data_recomendacao, cluster_id, payload_ia FROM t_skillshift_recomendacao";
 
     @Override
     public List<Recomendacao> listarTodos() {
@@ -73,7 +73,7 @@ public class RecomendacaoDAOImpl implements RecomendacaoDAO {
 
     @Override
     public Recomendacao criar(Recomendacao recomendacao) {
-        String sql = "INSERT INTO t_skillshift_recomendacao (id_usuario, id_curso, score, fonte, status, data_recomendacao, cluster, payload_ia) "
+        String sql = "INSERT INTO t_skillshift_recomendacao (id_usuario, id_curso, score, fonte, status, data_recomendacao, cluster_id, payload_ia) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql, new String[] { "id_recomendacao" })) {
@@ -92,7 +92,7 @@ public class RecomendacaoDAOImpl implements RecomendacaoDAO {
 
     @Override
     public void atualizar(Recomendacao recomendacao) {
-        String sql = "UPDATE t_skillshift_recomendacao SET id_usuario = ?, id_curso = ?, score = ?, fonte = ?, status = ?, data_recomendacao = ?, cluster = ?, payload_ia = ? "
+        String sql = "UPDATE t_skillshift_recomendacao SET id_usuario = ?, id_curso = ?, score = ?, fonte = ?, status = ?, data_recomendacao = ?, cluster_id = ?, payload_ia = ? "
                 + "WHERE id_recomendacao = ?";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -146,7 +146,7 @@ public class RecomendacaoDAOImpl implements RecomendacaoDAO {
         recomendacao.setStatus(rs.getString("status"));
         var data = rs.getDate("data_recomendacao");
         recomendacao.setDataRecomendacao(data != null ? data.toLocalDate() : null);
-        recomendacao.setCluster(rs.getObject("cluster", Integer.class));
+        recomendacao.setCluster(rs.getObject("cluster_id", Integer.class));
         recomendacao.setPayloadIa(rs.getString("payload_ia"));
         return recomendacao;
     }

@@ -13,7 +13,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class RecomendacaoLogDAOImpl implements RecomendacaoLogDAO {
 
     private static final String INSERT = "INSERT INTO t_skillshift_recomendacao_ia_log "
-            + "(id_usuario, cluster, payload_envio, payload_retorno, status, erro) VALUES (?, ?, ?, ?, ?, ?)";
+            + "(id_usuario, cluster_id, payload_envio, payload_retorno, status, erro) VALUES (?, ?, ?, ?, ?, ?)";
 
     @Override
     public void registrar(Long usuarioId, Integer cluster, String payloadEnvio, String payloadRetorno, String status, String erro) {

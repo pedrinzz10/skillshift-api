@@ -65,7 +65,7 @@ Os scripts oficiais para criar e popular o schema Oracle ficam em `src/db/ddl/`:
 Estruturas extras:
 - `t_skillshift_curso_alias`: auxilia o pareamento entre os nomes retornados pela IA e os cursos reais.
 - `t_skillshift_recomendacao_ia_log`: registra cada chamada ao serviço de IA (payload enviado/recebido, cluster e erro, se houver).
-- `t_skillshift_recomendacao` possui as colunas `cluster` e `payload_ia` para rastrear metadados das recomendações automáticas.
+- `t_skillshift_recomendacao` possui as colunas `cluster_id` e `payload_ia` para rastrear metadados das recomendações automáticas.
 
 ## Deploy no Render (Docker)
 

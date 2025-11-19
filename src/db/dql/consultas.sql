@@ -15,12 +15,12 @@ SELECT c.categoria,
  ORDER BY total_cursos DESC;
 
 -- Consulta 3: Avalia o desempenho das recomendacoes IA por cluster e status.
-SELECT r.cluster,
+SELECT r.cluster_id,
        r.status,
        COUNT(*) AS qtde
   FROM t_skillshift_recomendacao r
- GROUP BY r.cluster, r.status
- ORDER BY r.cluster;
+ GROUP BY r.cluster_id, r.status
+ ORDER BY r.cluster_id;
 
 -- Consulta 4: Detecta empresas com maior participacao de usuarios para direcionar ofertas B2B.
 SELECT e.nome AS empresa,
