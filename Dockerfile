@@ -3,7 +3,7 @@
 # Stage 1 - Build
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 AS build
 WORKDIR /workspace
-COPY . .
+COPY --chown=quarkus:quarkus . .
 RUN chmod +x mvnw
 RUN ./mvnw package -DskipTests
 
