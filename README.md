@@ -66,6 +66,17 @@ Estruturas extras:
 - `TB_RECOMENDACAO_IA_LOG`: registra cada chamada ao serviço de IA (payload enviado/recebido, cluster e erro, se houver).
 - `TB_RECOMENDACAO` agora possui as colunas `cluster` e `payload_ia` para rastrear metadados das recomendações automáticas.
 
+## Deploy no Render (Docker)
+
+1. Configure as variáveis de ambiente no painel do Render:
+   - `QUARKUS_DATASOURCE_JDBC_URL`
+   - `QUARKUS_DATASOURCE_USERNAME`
+   - `QUARKUS_DATASOURCE_PASSWORD`
+   - (opcional) `SKILLSHIFT_IA_URL`
+2. Crie um serviço do tipo **Web Service** com `Language = Docker`.
+3. Aponte o campo **Dockerfile Path** para `Dockerfile` (raiz do projeto). O arquivo é multi-stage: compila com `./mvnw package -DskipTests` e copia o conteúdo para a imagem final.
+4. O container expõe a porta 8080; o Render usará `PORT` automaticamente.
+
 Execute-os nessa sequência antes de subir a API para garantir alinhamento entre o banco e as validações impostas no código.
 
 ## Recursos REST de exemplo
