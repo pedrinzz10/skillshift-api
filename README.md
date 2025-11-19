@@ -1,85 +1,210 @@
-# skillshift-api
+# SkillShift.AI – Global Solution 2025
 
-Projeto backend do SkillShift.AI desenvolvido com Quarkus (Java 21) e JDBC puro.
+Projeto completo de requalificação profissional baseado em Quarkus (Java 21) + Oracle + IA em Flask. Esta documentação reúne o conteúdo técnico e funcional da solução.
 
-## Execucao em modo desenvolvimento
+---
 
-Rode o modo dev (com live coding) com:
+## 1. Capa
+- **Nome da solução:** SkillShift.AI  
+- **Equipe:** SkillShift Squad  
+- **Integrantes:** Pedro Henrique Zago • Maria Eduarda Silva • João Victor Santos • Beatriz Rocha • Lucas Almeida  
+- **Curso:** ADS – FIAP  
+- **Global Solution:** 2025
 
-```shell
+## 2. Sumário
+1. Capa ........................................................................ 1  
+2. Sumário .................................................................... 2  
+3. Objetivo e Escopo .................................................... 3  
+4. Descrição da Solução .................................................. 4  
+5. Funcionalidades Principais ......................................... 6  
+6. Funcionalidades Implementadas ...................................... 7  
+7. Tabela de Endpoints .................................................. 8  
+8. Diagrama de Classes .................................................. 11  
+9. Execução e Deploy .................................................... 12  
+10. Scripts SQL e Dados ................................................ 13  
+
+---
+
+## 3. Objetivo e Escopo do Projeto
+A SkillShift.AI responde ao desafio “Futuro do Trabalho — Requalificação Profissional com IA” ao:
+- Identificar risco de automação e obsolescência para cada usuário.
+- Propor ações de requalificação personalizadas e priorizadas.
+- Recomendar trilhas de aprendizagem baseadas em IA, integrando cursos internos e externos.
+- Atender usuários finais e empresas (B2C + B2B), incluindo vínculo usuário-empresa e relatórios corporativos.
+
+Escopo contemplado:
+- API Java Quarkus com RBAC (USER, EMPRESA, ADMIN), autenticação e CRUD completo de entidades.
+- Modelo relacional Oracle com scripts DDL/DML/DQL e massa de teste.
+- Integração real com a IA em Flask publicada em Render.
+- Regras de negócio como validação de permissões, geração de recomendações, logging e auditoria básica.
+
+## 4. Descrição da Solução
+A solução possui três camadas:
+1. **Backend Java/Quarkus:** núcleo operacional, responsável por autenticação, controle de acesso, CRUD (usuários, cursos, empresas, vínculos, recomendações) e orquestração do fluxo de recomendações.
+2. **Banco Oracle:** modelo relacional com tabelas `t_skillshift_*`, constraints, scripts de carga e consultas analíticas.
+3. **API de IA em Flask/Python:** hospedada em `https://skillshift-ai-platform.onrender.com`, treinada com o dataset `Data_final.csv` usando Random Forest (macro-área profissional) e K-Means (cluster/recomendações).
+
+Fluxo `/recomendacoes/gerar`:
+1. API Java busca o usuário no Oracle.
+2. Monta JSON com features (OP_score, CO_score, EX_score etc.).
+3. Chama `/cluster-profile` da IA Flask.
+4. Recebe cluster + lista de cursos recomendados.
+5. Mapeia nomes retornados para IDs reais (`t_skillshift_curso` e `t_skillshift_curso_alias`).
+6. Calcula score e cluster.
+7. Persiste na tabela `t_skillshift_recomendacao` e registra log em `t_skillshift_recomendacao_ia_log`.
+8. Retorna ao front/chatbot as recomendações persistidas.
+
+A IA fica publicada no Render; o backend pode rodar em qualquer provedor (Render, Railway, AWS, local). Durante o desenvolvimento, Java e Flask podem executar localmente usando as mesmas URLs.
+
+## 5. Funcionalidades Principais
+- CRUD completo de usuários, cursos, empresas e vínculos usuário-empresa.
+- Autenticação por email/senha e RBAC simples (`tipo_perfil`).
+- Geração de recomendações via IA (REST Client).
+- Persistência dos resultados com payload, cluster e score.
+- Histórico e filtros de recomendações por usuário.
+- Integração Oracle via JDBC com `ConnectionFactory`.
+
+## 6. Funcionalidades Implementadas (Destaques)
+- API Java operante (Resources → BO → DAO) com validações.
+- Modelo relacional Oracle completo + scripts de carga em blocos.
+- IA hospedada/pronta e integração REST implementada.
+- Armazenamento real das recomendações e logs de IA.
+- Filtro de score e normalização.
+- Fluxo de regras de negócio completo em `/recomendacoes/gerar`.
+
+## 7. Endpoints da API REST
+
+| URI | Método | Descrição | Corpo Req. | Corpo Resp. | Códigos |
+|-----|--------|-----------|------------|-------------|---------|
+| `/auth/login` | POST | Autentica usuário | `{ email, senha }` | `{ token, perfil }` | 200, 400, 401, 500 |
+| `/usuarios` | GET | Lista usuários | — | Array de usuários | 200, 500 |
+| `/usuarios/{id}` | GET | Detalha usuário | — | Usuário | 200, 404, 500 |
+| `/usuarios` | POST | Cria usuário | JSON com campos obrigatórios | Usuário criado | 201, 400, 409, 500 |
+| `/usuarios/{id}` | PUT | Atualiza usuário | JSON | Usuário atualizado | 200, 400, 404, 500 |
+| `/usuarios/{id}` | DELETE | Remove usuário | — | — | 204, 404, 500 |
+| `/cursos` | CRUD | Gestão dos cursos | JSON | Curso/Lista | 200, 201, 204, 400, 404, 500 |
+| `/empresas` | CRUD | Gestão de empresas | JSON | Empresa/Lista | 200, 201, 204, 400, 404, 409, 500 |
+| `/recomendacoes?usuarioId=X` | GET | Lista recomendações com filtro | — | Lista de recomendações | 200, 500 |
+| `/recomendacoes/gerar?usuarioId=X` | POST | Gera recomendações via IA | — | Lista criada | 201, 400, 404, 503, 500 |
+| `/cluster-profile` (IA Flask) | POST | Consome IA externa | JSON com features | `{ cluster, cursosRecomendados[] }` | 200, 400, 500 |
+
+## 8. Diagrama de Classes (Mermaid)
+
+```mermaid
+classDiagram
+direction LR
+
+class Usuario {
+  +Long idUsuario
+  +String nome
+  +String email
+  +String senhaHash
+  +Integer idade
+  +String escolaridade
+  +String areaAtual
+  +Double nivelRisco
+  +String tipoPerfil
+  +LocalDate criadoEm
+}
+
+class Curso {
+  +Long idCurso
+  +String nome
+  +String categoria
+  +Integer duracaoHoras
+  +String plataforma
+  +String nivel
+  +String ativo
+}
+
+class Empresa {
+  +Long idEmpresa
+  +String nome
+  +String setor
+  +String tamanho
+  +String cnpj
+}
+
+class UsuarioEmpresa {
+  +Long idUsuario
+  +Long idEmpresa
+  +String cargo
+  +LocalDate dataInicio
+}
+
+class Recomendacao {
+  +Long idRecomendacao
+  +Long idUsuario
+  +Long idCurso
+  +Double score
+  +String fonte
+  +String status
+  +LocalDate dataRecomendacao
+  +Integer cluster
+  +String payloadIa
+}
+
+class IAEntradaPerfil {
+  +Double opScore
+  +Double coScore
+  +Double exScore
+  +Double agScore
+  +Double neScore
+  +Double raciocinioScore
+  +Double problemasScore
+  +Double colabScore
+  +Double adaptScore
+  +Double educScore
+}
+
+class IARetornoCluster {
+  +Integer cluster
+  +List~String~ cursosRecomendados
+}
+
+class IAClient {
+  +IARetornoCluster gerarPerfil(IAEntradaPerfil)
+}
+
+Usuario "1" -- "*" UsuarioEmpresa
+Empresa "1" -- "*" UsuarioEmpresa
+Usuario "1" -- "*" Recomendacao
+Curso "1" -- "*" Recomendacao
+Recomendacao --> IAEntradaPerfil
+Recomendacao --> IARetornoCluster
+IAClient --> IARetornoCluster
+```
+
+## 9. Execução e Deploy
+```bash
+# Dev mode
 ./mvnw quarkus:dev
-```
 
-A Dev UI fica disponivel apenas neste modo: <http://localhost:8080/q/dev/>.
-
-## Empacotamento e execucao
-
-Gere o pacote padrao:
-
-```shell
+# Empacotamento
 ./mvnw package
-```
 
-O arquivo `quarkus-run.jar` aparece em `target/quarkus-app/` e deve ser executado via `java -jar target/quarkus-app/quarkus-run.jar`. As dependencias ficam em `target/quarkus-app/lib/`.
-
-Para gerar um uber-jar:
-
-```shell
+# Executar uber-jar
 ./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+java -jar target/*-runner.jar
 
-Depois execute com `java -jar target/*-runner.jar`.
-
-## Binario nativo
-
-Crie um executavel nativo com:
-
-```shell
-./mvnw package -Dnative
-```
-
-Sem GraalVM instalada, use o build em container:
-
-```shell
+# Binário nativo (container build)
 ./mvnw package -Dnative -Dquarkus.native.container-build=true
 ```
 
-O binario final ficara em `target/skillshift-api-1.0.0-SNAPSHOT-runner`.
+Deploy no Render (Docker):
+1. Configurar variáveis (`QUARKUS_DATASOURCE_*`, `SKILLSHIFT_IA_URL`).
+2. Criar Web Service com Dockerfile da raiz (multi-stage).
+3. Render usa a porta exposta (8080) automaticamente.
 
-## Referencias uteis
+## 10. Scripts SQL e Dados
+Localizados em `src/db/ddl/`:
+- `create_tables.sql`: recria todas as tabelas `t_skillshift_*` (PK, FK, UK, CK, `cluster_id`, `payload_ia`).
+- `drop_tables.sql`: drop ordenado para reset.
+- `carga_dados.sql` + blocos `carga_dados_0X_*`: massa de teste (16 usuários, >100 cursos, empresas, recomendações, aliases).
+- `../dql/consultas.sql`: consultas analíticas para BI.
 
-- Hibernate Validator: <https://quarkus.io/guides/validation>
-- SmallRye OpenAPI (Swagger UI): <https://quarkus.io/guides/openapi-swaggerui>
-- REST Jackson: <https://quarkus.io/guides/rest#json-serialisation>
-- JDBC Oracle: <https://quarkus.io/guides/datasource>
+Estruturas complementares:
+- `t_skillshift_curso_alias`: mapear nomes retornados pela IA.
+- `t_skillshift_recomendacao_ia_log`: log de payloads e status do serviço IA.
 
-## Scripts SQL do banco
-
-Os scripts oficiais para criar e popular o schema Oracle ficam em `src/db/ddl/`:
-
-- `create_tables.sql`: recria todas as tabelas seguindo o padrão `t_skillshift_<dominio>` (PK, FK, UK, CK e identidades).
-- `drop_tables.sql`: remove as tabelas na ordem correta.
-- `carga_dados.sql`: insere a massa de teste padrão do SkillShift.AI (mais de 100 cursos tecnológicos, aliases e dados para empresas).
-- `../dql/consultas.sql`: contém consultas analíticas (DQL/DRS) usadas para tomada de decisão.
-
-Estruturas extras:
-- `t_skillshift_curso_alias`: auxilia o pareamento entre os nomes retornados pela IA e os cursos reais.
-- `t_skillshift_recomendacao_ia_log`: registra cada chamada ao serviço de IA (payload enviado/recebido, cluster e erro, se houver).
-- `t_skillshift_recomendacao` possui as colunas `cluster_id` e `payload_ia` para rastrear metadados das recomendações automáticas.
-
-## Deploy no Render (Docker)
-
-1. Configure as variáveis de ambiente no painel do Render:
-   - `QUARKUS_DATASOURCE_JDBC_URL`
-   - `QUARKUS_DATASOURCE_USERNAME`
-   - `QUARKUS_DATASOURCE_PASSWORD`
-   - (opcional) `SKILLSHIFT_IA_URL`
-2. Crie um serviço do tipo **Web Service** com `Language = Docker`.
-3. Aponte o campo **Dockerfile Path** para `Dockerfile` (raiz do projeto). O arquivo é multi-stage: compila com `./mvnw package -DskipTests` e copia o conteúdo para a imagem final.
-4. O container expõe a porta 8080; o Render usará `PORT` automaticamente.
-
-Execute-os nessa sequência antes de subir a API para garantir alinhamento entre o banco e as validações impostas no código.
-
-## Recursos REST de exemplo
-
-O projeto gerado contem um recurso REST inicial para servir de demonstracao. Mais detalhes: <https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources>
+> Execute `drop_tables.sql` → `create_tables.sql` → `carga_dados.sql` antes de subir a API para garantir aderência entre banco e código.
