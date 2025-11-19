@@ -16,4 +16,8 @@ public interface CursoDAO {
     void atualizar(Curso curso);
 
     void deletar(Long id);
+
+    List<Curso> buscarPorNomeLike(String nome);
+
+    Optional<Curso> buscarPorAlias(String termo);
 }

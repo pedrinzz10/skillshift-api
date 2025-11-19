@@ -19,7 +19,7 @@ import br.com.skillshift.model.Recomendacao;
 @ApplicationScoped
 public class RecomendacaoDAOImpl implements RecomendacaoDAO {
 
-    private static final String BASE_SELECT = "SELECT id_recomendacao, id_usuario, id_curso, score, fonte, status, data_recomendacao FROM TB_RECOMENDACAO";
+    private static final String BASE_SELECT = "SELECT id_recomendacao, id_usuario, id_curso, score, fonte, status, data_recomendacao, cluster, payload_ia FROM TB_RECOMENDACAO";
 
     @Override
     public List<Recomendacao> listarTodos() {
@@ -73,8 +73,8 @@ public class RecomendacaoDAOImpl implements RecomendacaoDAO {
 
     @Override
     public Recomendacao criar(Recomendacao recomendacao) {
-        String sql = "INSERT INTO TB_RECOMENDACAO (id_usuario, id_curso, score, fonte, status, data_recomendacao) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO TB_RECOMENDACAO (id_usuario, id_curso, score, fonte, status, data_recomendacao, cluster, payload_ia) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql, new String[] { "id_recomendacao" })) {
             preencherStatementRecomendacao(statement, recomendacao);
@@ -92,12 +92,12 @@ public class RecomendacaoDAOImpl implements RecomendacaoDAO {
 
     @Override
     public void atualizar(Recomendacao recomendacao) {
-        String sql = "UPDATE TB_RECOMENDACAO SET id_usuario = ?, id_curso = ?, score = ?, fonte = ?, status = ?, data_recomendacao = ? "
+        String sql = "UPDATE TB_RECOMENDACAO SET id_usuario = ?, id_curso = ?, score = ?, fonte = ?, status = ?, data_recomendacao = ?, cluster = ?, payload_ia = ? "
                 + "WHERE id_recomendacao = ?";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             preencherStatementRecomendacao(statement, recomendacao);
-            statement.setLong(7, recomendacao.getIdRecomendacao());
+            statement.setLong(9, recomendacao.getIdRecomendacao());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar recomendação", e);
@@ -127,6 +127,12 @@ public class RecomendacaoDAOImpl implements RecomendacaoDAO {
         statement.setString(4, recomendacao.getFonte());
         statement.setString(5, recomendacao.getStatus());
         setLocalDate(statement, 6, recomendacao.getDataRecomendacao());
+        if (recomendacao.getCluster() != null) {
+            statement.setInt(7, recomendacao.getCluster());
+        } else {
+            statement.setNull(7, Types.INTEGER);
+        }
+        statement.setString(8, recomendacao.getPayloadIa());
     }
 
     private Recomendacao mapRecomendacao(ResultSet rs) throws SQLException {
@@ -140,6 +146,8 @@ public class RecomendacaoDAOImpl implements RecomendacaoDAO {
         recomendacao.setStatus(rs.getString("status"));
         var data = rs.getDate("data_recomendacao");
         recomendacao.setDataRecomendacao(data != null ? data.toLocalDate() : null);
+        recomendacao.setCluster(rs.getObject("cluster", Integer.class));
+        recomendacao.setPayloadIa(rs.getString("payload_ia"));
         return recomendacao;
     }
 

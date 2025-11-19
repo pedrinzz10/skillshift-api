@@ -11,6 +11,8 @@ public class Recomendacao {
     private String fonte;
     private String status;
     private LocalDate dataRecomendacao;
+    private Integer cluster;
+    private String payloadIa;
 
     public Long getIdRecomendacao() {
         return idRecomendacao;
@@ -66,5 +68,21 @@ public class Recomendacao {
 
     public void setDataRecomendacao(LocalDate dataRecomendacao) {
         this.dataRecomendacao = dataRecomendacao;
+    }
+
+    public Integer getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(Integer cluster) {
+        this.cluster = cluster;
+    }
+
+    public String getPayloadIa() {
+        return payloadIa;
+    }
+
+    public void setPayloadIa(String payloadIa) {
+        this.payloadIa = payloadIa;
     }
 }

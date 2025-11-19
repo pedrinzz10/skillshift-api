@@ -59,7 +59,12 @@ Os scripts oficiais para criar e popular o schema Oracle ficam em `src/db/ddl/`:
 
 - `drop_tables.sql`: remove todas as tabelas na ordem correta.
 - `create_tables.sql`: recria as tabelas (com identities, constraints e checks).
-- `carga_dados.sql`: insere a massa de teste padrão do SkillShift.AI.
+- `carga_dados.sql`: insere a massa de teste padrão do SkillShift.AI (mais de 100 cursos tecnológicos, aliases e dados para empresas).
+
+Estruturas extras:
+- `TB_CURSO_ALIAS`: auxilia o pareamento entre os nomes retornados pela IA e os cursos reais.
+- `TB_RECOMENDACAO_IA_LOG`: registra cada chamada ao serviço de IA (payload enviado/recebido, cluster e erro, se houver).
+- `TB_RECOMENDACAO` agora possui as colunas `cluster` e `payload_ia` para rastrear metadados das recomendações automáticas.
 
 Execute-os nessa sequência antes de subir a API para garantir alinhamento entre o banco e as validações impostas no código.
 

@@ -3,6 +3,7 @@ package br.com.skillshift.resource;
 import java.util.NoSuchElementException;
 
 import br.com.skillshift.bo.RecomendacaoBO;
+import br.com.skillshift.exception.IAServiceIndisponivelException;
 import br.com.skillshift.model.Recomendacao;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -77,14 +78,18 @@ public class RecomendacaoResource {
 
     @POST
     @Path("/gerar")
-    public Response gerar(GerarRequest request) {
-        if (request == null || request.usuarioId == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(mensagem("usuarioId e obrigatorio")).build();
+    public Response gerar(@QueryParam("usuarioId") Long usuarioId) {
+        if (usuarioId == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(mensagem("usuarioId é obrigatório")).build();
         }
         try {
-            return Response.ok(recomendacaoBO.gerarSimulada(request.usuarioId)).build();
+            return Response.status(Response.Status.CREATED).entity(recomendacaoBO.gerarRecomendacoes(usuarioId)).build();
         } catch (NoSuchElementException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(mensagem(e.getMessage())).build();
+        } catch (IAServiceIndisponivelException e) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                    .entity(erro("Servico de inteligencia artificial indisponivel no momento. Tente novamente mais tarde."))
+                    .build();
         } catch (RuntimeException e) {
             return erroServidor(e);
         }
@@ -99,9 +104,13 @@ public class RecomendacaoResource {
         return new Mensagem(detalhe);
     }
 
-    public record GerarRequest(Long usuarioId) {
+    private Erro erro(String detalhe) {
+        return new Erro(detalhe);
     }
 
     public record Mensagem(String mensagem) {
+    }
+
+    public record Erro(String erro) {
     }
 }

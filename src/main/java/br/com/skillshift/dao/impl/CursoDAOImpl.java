@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,6 +95,51 @@ public class CursoDAOImpl implements CursoDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar curso", e);
         }
+    }
+
+    @Override
+    public List<Curso> buscarPorNomeLike(String nome) {
+        if (nome == null || nome.isBlank()) {
+            return Collections.emptyList();
+        }
+        String sql = BASE_SELECT + " WHERE UPPER(nome) LIKE ?";
+        List<Curso> cursos = new ArrayList<>();
+        try (Connection connection = ConnectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, "%" + nome.trim().toUpperCase() + "%");
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    cursos.add(mapCurso(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar cursos por nome", e);
+        }
+        return cursos;
+    }
+
+    @Override
+    public Optional<Curso> buscarPorAlias(String nome) {
+        if (nome == null || nome.isBlank()) {
+            return Optional.empty();
+        }
+        String sql = "SELECT c.id_curso, c.nome, c.categoria, c.duracao_horas, c.plataforma, c.nivel, c.ativo "
+                + "FROM TB_CURSO c JOIN TB_CURSO_ALIAS a ON c.id_curso = a.id_curso "
+                + "WHERE (UPPER(?) LIKE '%' || UPPER(a.termo) || '%') OR (UPPER(a.termo) LIKE '%' || UPPER(?) || '%')";
+        try (Connection connection = ConnectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            String termo = nome.trim().toUpperCase();
+            statement.setString(1, termo);
+            statement.setString(2, termo);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapCurso(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar curso por alias", e);
+        }
+        return Optional.empty();
     }
 
     private void preencherStatementCurso(PreparedStatement statement, Curso curso) throws SQLException {
