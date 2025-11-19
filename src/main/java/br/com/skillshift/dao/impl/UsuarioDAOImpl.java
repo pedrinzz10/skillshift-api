@@ -20,7 +20,7 @@ import br.com.skillshift.model.Usuario;
 public class UsuarioDAOImpl implements UsuarioDAO {
 
     private static final String BASE_SELECT = "SELECT id_usuario, nome, email, senha_hash, idade, escolaridade, area_atual, "
-            + "nivel_risco, tipo_perfil, criado_em FROM TB_USUARIO";
+            + "nivel_risco, tipo_perfil, criado_em FROM t_skillshift_usuario";
 
     @Override
     public List<Usuario> listarTodos() {
@@ -73,7 +73,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public Usuario criar(Usuario usuario) {
-        String sql = "INSERT INTO TB_USUARIO (nome, email, senha_hash, idade, escolaridade, area_atual, "
+        String sql = "INSERT INTO t_skillshift_usuario (nome, email, senha_hash, idade, escolaridade, area_atual, "
                 + "nivel_risco, tipo_perfil, criado_em) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql, new String[] { "id_usuario" })) {
@@ -92,7 +92,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public void atualizar(Usuario usuario) {
-        String sql = "UPDATE TB_USUARIO SET nome = ?, email = ?, senha_hash = ?, idade = ?, escolaridade = ?, "
+        String sql = "UPDATE t_skillshift_usuario SET nome = ?, email = ?, senha_hash = ?, idade = ?, escolaridade = ?, "
                 + "area_atual = ?, nivel_risco = ?, tipo_perfil = ?, criado_em = ? WHERE id_usuario = ?";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -106,7 +106,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public void deletar(Long id) {
-        String sql = "DELETE FROM TB_USUARIO WHERE id_usuario = ?";
+        String sql = "DELETE FROM t_skillshift_usuario WHERE id_usuario = ?";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
@@ -162,3 +162,4 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
     }
 }
+

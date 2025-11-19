@@ -19,7 +19,7 @@ import br.com.skillshift.model.Curso;
 @ApplicationScoped
 public class CursoDAOImpl implements CursoDAO {
 
-    private static final String BASE_SELECT = "SELECT id_curso, nome, categoria, duracao_horas, plataforma, nivel, ativo FROM TB_CURSO";
+    private static final String BASE_SELECT = "SELECT id_curso, nome, categoria, duracao_horas, plataforma, nivel, ativo FROM t_skillshift_curso";
 
     @Override
     public List<Curso> listarTodos() {
@@ -55,7 +55,7 @@ public class CursoDAOImpl implements CursoDAO {
 
     @Override
     public Curso criar(Curso curso) {
-        String sql = "INSERT INTO TB_CURSO (nome, categoria, duracao_horas, plataforma, nivel, ativo) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_skillshift_curso (nome, categoria, duracao_horas, plataforma, nivel, ativo) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql, new String[] { "id_curso" })) {
             preencherStatementCurso(statement, curso);
@@ -73,7 +73,7 @@ public class CursoDAOImpl implements CursoDAO {
 
     @Override
     public void atualizar(Curso curso) {
-        String sql = "UPDATE TB_CURSO SET nome = ?, categoria = ?, duracao_horas = ?, plataforma = ?, nivel = ?, ativo = ? "
+        String sql = "UPDATE t_skillshift_curso SET nome = ?, categoria = ?, duracao_horas = ?, plataforma = ?, nivel = ?, ativo = ? "
                 + "WHERE id_curso = ?";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -87,7 +87,7 @@ public class CursoDAOImpl implements CursoDAO {
 
     @Override
     public void deletar(Long id) {
-        String sql = "DELETE FROM TB_CURSO WHERE id_curso = ?";
+        String sql = "DELETE FROM t_skillshift_curso WHERE id_curso = ?";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
@@ -124,7 +124,7 @@ public class CursoDAOImpl implements CursoDAO {
             return Optional.empty();
         }
         String sql = "SELECT c.id_curso, c.nome, c.categoria, c.duracao_horas, c.plataforma, c.nivel, c.ativo "
-                + "FROM TB_CURSO c JOIN TB_CURSO_ALIAS a ON c.id_curso = a.id_curso "
+                + "FROM t_skillshift_curso c JOIN t_skillshift_curso_alias a ON c.id_curso = a.id_curso "
                 + "WHERE (UPPER(?) LIKE '%' || UPPER(a.termo) || '%') OR (UPPER(a.termo) LIKE '%' || UPPER(?) || '%')";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -175,3 +175,4 @@ public class CursoDAOImpl implements CursoDAO {
         return "S".equalsIgnoreCase(value.trim());
     }
 }
+

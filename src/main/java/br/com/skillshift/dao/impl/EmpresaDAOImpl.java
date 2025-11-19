@@ -17,7 +17,7 @@ import br.com.skillshift.model.Empresa;
 @ApplicationScoped
 public class EmpresaDAOImpl implements EmpresaDAO {
 
-    private static final String BASE_SELECT = "SELECT id_empresa, nome, setor, tamanho, cnpj FROM TB_EMPRESA";
+    private static final String BASE_SELECT = "SELECT id_empresa, nome, setor, tamanho, cnpj FROM t_skillshift_empresa";
 
     @Override
     public List<Empresa> listarTodos() {
@@ -53,7 +53,7 @@ public class EmpresaDAOImpl implements EmpresaDAO {
 
     @Override
     public Empresa criar(Empresa empresa) {
-        String sql = "INSERT INTO TB_EMPRESA (nome, setor, tamanho, cnpj) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO t_skillshift_empresa (nome, setor, tamanho, cnpj) VALUES (?, ?, ?, ?)";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql, new String[] { "id_empresa" })) {
             preencherStatementEmpresa(statement, empresa);
@@ -71,7 +71,7 @@ public class EmpresaDAOImpl implements EmpresaDAO {
 
     @Override
     public void atualizar(Empresa empresa) {
-        String sql = "UPDATE TB_EMPRESA SET nome = ?, setor = ?, tamanho = ?, cnpj = ? WHERE id_empresa = ?";
+        String sql = "UPDATE t_skillshift_empresa SET nome = ?, setor = ?, tamanho = ?, cnpj = ? WHERE id_empresa = ?";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             preencherStatementEmpresa(statement, empresa);
@@ -84,7 +84,7 @@ public class EmpresaDAOImpl implements EmpresaDAO {
 
     @Override
     public void deletar(Long id) {
-        String sql = "DELETE FROM TB_EMPRESA WHERE id_empresa = ?";
+        String sql = "DELETE FROM t_skillshift_empresa WHERE id_empresa = ?";
         try (Connection connection = ConnectionFactory.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
@@ -111,3 +111,4 @@ public class EmpresaDAOImpl implements EmpresaDAO {
         return empresa;
     }
 }
+

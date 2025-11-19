@@ -57,14 +57,15 @@ O binario final ficara em `target/skillshift-api-1.0.0-SNAPSHOT-runner`.
 
 Os scripts oficiais para criar e popular o schema Oracle ficam em `src/db/ddl/`:
 
-- `drop_tables.sql`: remove todas as tabelas na ordem correta.
-- `create_tables.sql`: recria as tabelas (com identities, constraints e checks).
+- `create_tables.sql`: recria todas as tabelas seguindo o padrão `t_skillshift_<dominio>` (PK, FK, UK, CK e identidades).
+- `drop_tables.sql`: remove as tabelas na ordem correta.
 - `carga_dados.sql`: insere a massa de teste padrão do SkillShift.AI (mais de 100 cursos tecnológicos, aliases e dados para empresas).
+- `../dql/consultas.sql`: contém consultas analíticas (DQL/DRS) usadas para tomada de decisão.
 
 Estruturas extras:
-- `TB_CURSO_ALIAS`: auxilia o pareamento entre os nomes retornados pela IA e os cursos reais.
-- `TB_RECOMENDACAO_IA_LOG`: registra cada chamada ao serviço de IA (payload enviado/recebido, cluster e erro, se houver).
-- `TB_RECOMENDACAO` agora possui as colunas `cluster` e `payload_ia` para rastrear metadados das recomendações automáticas.
+- `t_skillshift_curso_alias`: auxilia o pareamento entre os nomes retornados pela IA e os cursos reais.
+- `t_skillshift_recomendacao_ia_log`: registra cada chamada ao serviço de IA (payload enviado/recebido, cluster e erro, se houver).
+- `t_skillshift_recomendacao` possui as colunas `cluster` e `payload_ia` para rastrear metadados das recomendações automáticas.
 
 ## Deploy no Render (Docker)
 

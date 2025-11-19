@@ -12,7 +12,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class RecomendacaoLogDAOImpl implements RecomendacaoLogDAO {
 
-    private static final String INSERT = "INSERT INTO TB_RECOMENDACAO_IA_LOG "
+    private static final String INSERT = "INSERT INTO t_skillshift_recomendacao_ia_log "
             + "(id_usuario, cluster, payload_envio, payload_retorno, status, erro) VALUES (?, ?, ?, ?, ?, ?)";
 
     @Override
@@ -35,3 +35,4 @@ public class RecomendacaoLogDAOImpl implements RecomendacaoLogDAO {
         }
     }
 }
+
