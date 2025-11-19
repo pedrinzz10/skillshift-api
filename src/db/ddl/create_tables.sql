@@ -64,6 +64,7 @@ CREATE TABLE t_skillshift_recomendacao (
     fonte             VARCHAR2(30) NOT NULL,
     status            VARCHAR2(20) DEFAULT 'PENDENTE',
     data_recomendacao DATE DEFAULT SYSDATE,
+    cluster_id        NUMBER,
     payload_ia        CLOB,
     CONSTRAINT pk_t_skillshift_recomendacao PRIMARY KEY (id_recomendacao),
     CONSTRAINT fk_t_skillshift_rec_usuario FOREIGN KEY (id_usuario) REFERENCES t_skillshift_usuario (id_usuario),
