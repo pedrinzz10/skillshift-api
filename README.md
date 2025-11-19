@@ -178,7 +178,9 @@ IAClient --> IARetornoCluster
 ## 9. Modelo Entidade-Relacionamento (MER)
 Você pode visualizar o MER diretamente em qualquer visualizador Mermaid (ex.: <https://mermaid.live>). Basta colar o trecho abaixo para gerar a imagem:
 
-![MER SkillShift.AI](docs/img/mer-skillshift.png)
+![Modelo Relacional (dbdiagram.io)](docs/img/mer-skillshift.png)
+![Modelo Lógico (Data Modeler)](docs/img/modelo_logico_gs_skillshift.png)
+![Modelo Físico/Relacional (Data Modeler)](docs/img/modelo_relacional_gs_skillshift.png)
 
 ```mermaid
 erDiagram
