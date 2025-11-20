@@ -7,7 +7,7 @@ Projeto completo de requalificação profissional baseado em Quarkus (Java 21) 
 ## 1. Capa
 - **Nome da solução:** SkillShift.AI  
 - **Equipe:** SkillShift Squad  
-- **Integrantes:** Pedro Henrique Zago • Maria Eduarda Silva • João Victor Santos • Beatriz Rocha • Lucas Almeida  
+- **Integrantes:** Fabrício Henrique Pereira • Leonardo José Pereira  • Pedro Henrique de Oliveira   
 - **Curso:** ADS – FIAP  
 - **Global Solution:** 2025
 
